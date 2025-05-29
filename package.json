@@ -1,0 +1,47 @@
+{
+  "name": "@bboyjt/three-scatter",
+  "version": "0.0.4",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "keywords": [
+    "3d",
+    "threejs",
+    "three"
+  ],
+  "maintainers": [
+    "Jaime Torrealba (https://github.com/JaimeTorrealba)"
+  ],
+  "scripts": {
+    "dev": "cd ./playground && vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "main": "./dist/three-scatter.umd.cjs",
+  "module": "./dist/three-scatter.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "three": ">=0.165.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.24",
+    "@types/three": "^0.165.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "@three.ez/instanced-mesh": "^0.3.4",
+    "alea": "^1.0.1",
+    "simplex-noise": "^4.0.3"
+  }
+}
