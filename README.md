@@ -23,7 +23,7 @@ if performance is your must, [MeshSurfaceSampler](https://threejs.org/docs/?q=me
 
 ## Demos
 
-
+- TresJs: https://stackblitz.com/edit/vitejs-vite-qpspyyen?file=src%2Fcomponents%2FTheExperience.vue
 
 ## How to use it
 
@@ -40,7 +40,11 @@ const scatter = new ThreeScatter(surface, model, count);
 scene.add(scatter);
 ```
 
-You can also 
+You can also scatter more than one model:
+
+```js
+const scatter = new ThreeScatter(surface, [model1, model2], count);
+```
 
 ### Modifying all the 3D objects
 
