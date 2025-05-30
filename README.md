@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-pnpm i three-scatter
+pnpm i @jaimebboyjt/three-scatter
 ```
 
 ## Why to use it
@@ -129,11 +129,11 @@ scatter.removeDebug();
 ```
 
 ## TODO
-[] Distribution (when more than one model to scatter) should be base on %
-[] Distribution by axis (base on the normals)
-[] Avoid corners
-[] Density
-[] Merge geometries?
+- [] Distribution (when more than one model to scatter) should be base on %
+- [] Distribution by axis (base on the normals)
+- [] Avoid corners
+- [] Density
+- [] Merge geometries?
 
 
 ## Contributing
