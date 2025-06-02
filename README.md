@@ -23,6 +23,8 @@ if performance is your must, [MeshSurfaceSampler](https://threejs.org/docs/?q=me
 
 ## Demos
 
+- Multi-models: https://stackblitz.com/edit/vitejs-vite-kebufehm?file=package.json
+- Animated models: https://stackblitz.com/edit/vitejs-vite-7fz6pccr?file=src%2Fmain.js
 - TresJs: https://stackblitz.com/edit/vitejs-vite-qpspyyen?file=src%2Fcomponents%2FTheExperience.vue
 
 ## How to use it
