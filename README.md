@@ -1,6 +1,10 @@
 # Three scatter
 
-> Is my attempt to replicate a GScatter (plugin for blender) in Three.js
+> Inspired by a GScatter (plugin for blender) in Three.js
+
+Spread all types of objects/models into a geometry easily
+
+![Demo GIF](./public/Multi_model.gif)
 
 ## Installation
 
@@ -21,7 +25,7 @@ Use `three-scatter` if you:
 NOTE:
 if performance is your must, [MeshSurfaceSampler](https://threejs.org/docs/?q=meshS#examples/en/math/MeshSurfaceSampler) is your go to, I provided a debug option to help you, but [MeshSurfaceSampler](https://threejs.org/docs/?q=meshS#examples/en/math/MeshSurfaceSampler) is much more performance since you can (and probably should) use [InstancedMesh](https://threejs.org/docs/?q=InstancedMesh#api/en/objects/InstancedMesh)
 
-## Demos
+## Quick Demos
 
 - Multi-models: https://stackblitz.com/edit/vitejs-vite-kebufehm?file=package.json
 - Animated models: https://stackblitz.com/edit/vitejs-vite-7fz6pccr?file=src%2Fmain.js
