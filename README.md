@@ -9,7 +9,7 @@ Spread all types of objects/models into a geometry easily
 ## Installation
 
 ```bash
-pnpm i @jaimebboyjt/three-scatter
+npm i @jaimebboyjt/three-scatter
 ```
 
 ## Why to use it
@@ -138,12 +138,30 @@ scatter.setDebug(); // or
 scatter.removeDebug();
 ```
 
+### Distribution
+
+You can now set the percentage of model distribution in case you are scattering more than one model.
+
+```js
+const scatter = new ThreeScatter(surface, [model1, model2], count, {
+  distribution: [ 0.25, 0.75]
+});
+```
+
+NOTE:
+In order to set the distribution property, you need to have:
+1. An array of models
+2. A `distribution` property with equal length than the array of model
+3. All the numbers inside the `distribution` property needs to sum 1
+
+
 ## TODO
-- [] Distribution (when more than one model to scatter) should be base on %
+- [x] Distribution (when more than one model to scatter) should be base on %
 - [] Distribution by axis (base on the normals)
 - [] Avoid corners
 - [] Density
 - [] Merge geometries?
+- [] Clusters
 
 
 ## Contributing

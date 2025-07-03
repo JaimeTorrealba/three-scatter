@@ -23,7 +23,8 @@ interface Options {
     debugMaterial?: Material;
     seeds?: number;
     randomFn?: () => number;
-    useSkeletonUtils ?: boolean; // if true, use SkeletonUtils to clone the mesh
+    useSkeletonUtils?: boolean; // if true, use SkeletonUtils to clone the mesh
+    distribution?: number[];
 }
 
 class ThreeScatter extends Group {
@@ -39,6 +40,7 @@ class ThreeScatter extends Group {
     debugGeometry: BufferGeometry | undefined;
     debugMaterial: Material | undefined;
     instancedMesh: InstancedMesh2 | undefined;
+    distribution: number[] | undefined;
     // internals
     precision: number;
     faces: Triangle[];
@@ -61,6 +63,7 @@ class ThreeScatter extends Group {
         this.debugGeometry = options.debugGeometry
         this.debugMaterial = options.debugMaterial
         this.instancedMesh = undefined
+        this.distribution = options.distribution;
 
         //internals
         this.precision = 2;
@@ -127,8 +130,29 @@ class ThreeScatter extends Group {
             const randomPoint = this.#generateRandomPointInTriangle(i);
 
             if (Array.isArray(this.mesh)) {
-                const _i = i % this.mesh.length;
-                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[_i]) : this.mesh[_i].clone();
+                let meshIndex = 0;
+                if (this.distribution) {
+                    if(this.mesh.length !== this.distribution.length) {
+                        throw new Error('Distribution array length must match mesh array length');
+                    }
+                    const _sum = this.distribution.reduce((acc, val) => acc + val, 0);
+                    if (Math.abs(_sum - 1) > 1e-6) {
+                        throw new Error('Distribution array elements must sum to 1');
+                    }
+                    // Calculate cumulative distribution
+                    const cumulative = [];
+                    let sum = 0;
+                    for (let d of this.distribution) {
+                        sum += d;
+                        cumulative.push(sum);
+                    }
+                    const r = this.randomFn();
+                    meshIndex = cumulative.findIndex(c => r < c);
+                    if (meshIndex === -1) meshIndex = this.mesh.length - 1;
+                } else {
+                    meshIndex = i % this.mesh.length;
+                }
+                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
             } else {
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
             }
