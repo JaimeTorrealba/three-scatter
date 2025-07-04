@@ -126,43 +126,62 @@ class ThreeScatter extends Group {
 
         }
 
+        // If only one model
+        if (!Array.isArray(this.mesh)) {
+            for (let i = 0; i < this.count; i++) {
+                const randomPoint = this.#generateRandomPointInTriangle(i);
+                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
+                sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
+                sampleMesh.name = `scatter_${i}`;
+                (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
+                this.add(sampleMesh);
+            }
+            return;
+        }
+        // If multiple models but no distribution provided
+        if (!this.distribution) {
+            for (let i = 0; i < this.count; i++) {
+                let meshIndex = 0;
+                meshIndex = i % this.mesh.length;
+                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
+                const randomPoint = this.#generateRandomPointInTriangle(i);
+                sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
+                sampleMesh.name = `scatter_${i}`;
+                (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
+
+                this.add(sampleMesh);
+            }
+            return;
+        }
+        // If distribution is provided
+        if (this.mesh.length !== this.distribution.length) {
+            throw new Error('Distribution array length must match mesh array length');
+        }
+        const _sum = this.distribution.reduce((acc, val) => acc + val, 0);
+        if (Math.abs(_sum - 1) > 1e-6) {
+            throw new Error('Distribution array elements must sum to 1');
+        }
+
         for (let i = 0; i < this.count; i++) {
             const randomPoint = this.#generateRandomPointInTriangle(i);
+            let meshIndex = 0;
 
-            if (Array.isArray(this.mesh)) {
-                let meshIndex = 0;
-                if (this.distribution) {
-                    if(this.mesh.length !== this.distribution.length) {
-                        throw new Error('Distribution array length must match mesh array length');
-                    }
-                    const _sum = this.distribution.reduce((acc, val) => acc + val, 0);
-                    if (Math.abs(_sum - 1) > 1e-6) {
-                        throw new Error('Distribution array elements must sum to 1');
-                    }
-                    // Calculate cumulative distribution
-                    const cumulative = [];
-                    let sum = 0;
-                    for (let d of this.distribution) {
-                        sum += d;
-                        cumulative.push(sum);
-                    }
-                    const r = this.randomFn();
-                    meshIndex = cumulative.findIndex(c => r < c);
-                    if (meshIndex === -1) meshIndex = this.mesh.length - 1;
-                } else {
-                    meshIndex = i % this.mesh.length;
-                }
-                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
-            } else {
-                sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
+            // Calculate cumulative distribution
+            const cumulative = [];
+            let sum = 0;
+            for (let d of this.distribution) {
+                sum += d;
+                cumulative.push(sum);
             }
+            const r = this.randomFn();
+            meshIndex = cumulative.findIndex(c => r < c);
+            if (meshIndex === -1) meshIndex = this.mesh.length - 1;
+            sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
             sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
             sampleMesh.name = `scatter_${i}`;
             (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
-
             this.add(sampleMesh);
         }
-
         return this
     }
     #sampleDebug() {
