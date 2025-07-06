@@ -1,6 +1,6 @@
 {
   "name": "@jaimebboyjt/three-scatter",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "license": "MIT",
   "private": false,
   "description": "A Three.js library for scattering 3D models",
