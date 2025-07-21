@@ -102,7 +102,7 @@ const url = "/Mushnub.glb";
 let scatter;
 let mixer = [];
 toScatterLoader.load(url, (_model) => {
-  scatter = new ThreeScatter(geometry, _model.scene, 10, {
+  scatter = new ThreeScatter(10, geometry, _model.scene, {
     useSkeletonUtils: true
   });
   scatter.setAll((model, i) => {

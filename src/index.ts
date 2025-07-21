@@ -28,9 +28,9 @@ interface Options {
 }
 
 class ThreeScatter extends Group {
-    base: BufferGeometry;
-    mesh: Mesh | Mesh[];
     count: number;
+    base: BufferGeometry;
+    mesh?: Mesh | Mesh[];
     // options
     seeds: number;
     randomFn: () => number;
@@ -44,9 +44,10 @@ class ThreeScatter extends Group {
     // internals
     precision: number;
     faces: Triangle[];
+    positions: Vector3[];
     noise: (x: number, y: number) => number;
 
-    constructor(base: BufferGeometry, mesh: Mesh, count: number, options: Options = {}) {
+    constructor(count: number, base: BufferGeometry, mesh: Mesh, options: Options = {}) {
         super();
         this.base = base;
         this.mesh = mesh;
@@ -70,6 +71,7 @@ class ThreeScatter extends Group {
         const prng = alea(this.seeds);
         this.noise = createNoise2D(prng);
         this.faces = [];
+        this.positions = [];
         this.sample()
 
         if (this.debug) {
@@ -95,15 +97,14 @@ class ThreeScatter extends Group {
             z: (1 - r1 - r2) * v1.z + r1 * v2.z + r2 * v3.z,
             triangle: randomTriangle
         };
+        this.positions.push(new Vector3(randomPoint.x, randomPoint.y, randomPoint.z));
         return randomPoint;
     }
-    sample() {
+    #extractFaces() {
         const _face = new Triangle();
         const positionAttribute = this.base.getAttribute('position');
         const indexAttribute = this.base.index;
         const totalFaces = indexAttribute ? (indexAttribute.count / 3) : (positionAttribute.count / 3);
-        let sampleMesh;
-        // Extract faces from base model
         for (let i = 0; i < totalFaces; i++) {
 
             let i0 = 3 * i;
@@ -124,6 +125,19 @@ class ThreeScatter extends Group {
 
             this.faces.push(_face.clone());
 
+        }
+    }
+    sample() {
+        let sampleMesh;
+        // Extract faces from base model
+        this.#extractFaces();
+
+        // If no mesh provided
+        if (!this.mesh) {
+            for (let i = 0; i < this.count; i++) {
+                this.#generateRandomPointInTriangle(i);
+            }
+            return
         }
 
         // If only one model
@@ -283,10 +297,7 @@ class ThreeScatter extends Group {
         return this.faces;
     }
     getPositions() {
-        return this.children.map((child) => {
-            const mesh = child as Mesh;
-            return mesh.position;
-        });
+        return this.positions;
     }
 
 }

@@ -62,21 +62,29 @@ pane.addInput(options, "seed", {
   scatter.setSeeds(options.seed);
 });
 
+pane.addInput(options, "rotationY", {
+  min: -Math.PI,
+  max: Math.PI
+}).on('change', () => {
+  scatter.setAll(model => {
+    model.rotation.y = options.rotationY;
+  });
+});
 pane.addInput(options, "scale", {
-  min: 2,
-  max: 7,
+  min: 1,
+  max: 5,
   step: 1
 }).on('change', () => {
   scatter.setAll(model => {
     model.scale.set(options.scale, options.scale, options.scale);
   });
 });
-
-const alignBtn = pane.addButton({
-  title: 'Aligns',
-});
-alignBtn.on('click', () => {
-  scatter.alignToSurfaceNormal();
+pane.addInput(options, "firstRockScale", {
+  min: 1,
+  max: 15,
+  step: 1
+}).on('change', () => {
+  scatter.children[0].scale.set(options.firstRockScale, options.firstRockScale, options.firstRockScale);
 });
 
 const removeBtn = pane.addButton({
@@ -95,27 +103,25 @@ wireframeBtn.on('click', () => {
 /**
  * Scatter
  */
-const toScatterLoader = new GLTFLoader();
 const floorLoader = new GLTFLoader();
-const url = "/surfaceSamplingTest.glb";
 let scatter
 let floorModel
-toScatterLoader.load(url, (_floor) => {
-  floorLoader.load("/rocks.glb", (_rock) => {
-    floorLoader.load("/rocks-tall.glb", (_rockTall) => {
-      floorLoader.load("/trunk.glb", (_trunk) => {
-        floorLoader.load("/trunk-long.glb", (_trunkLong) => {
-          floorModel = _floor.scene.children[0];
-          const floor = _floor.scene.children[0].geometry;
-          _floor.scene.scale.set(0.5, 0.5, 0.5);
+floorLoader.load("/surfaceSamplingTest.glb", (_floor) => {
+  floorModel = _floor.scene.children[0];
+  const floor = _floor.scene.children[0].geometry;
 
-          scatter = new ThreeScatter(100, floor, [_rock.scene, _trunk.scene, _rockTall.scene, _trunkLong.scene]);
-          scatter.scale.set(0.5, 0.5, 0.5);
-          scene.add(scatter, _floor.scene);
-        });
-      });
-    });
+  scatter = new ThreeScatter(50, floor);
+  const myMesh = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.2, 16, 100), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+
+  const positions = scatter.getPositions();
+  positions.forEach((position) => {
+    const mesh = myMesh.clone();
+    mesh.position.copy(position);
+    scene.add(mesh);
   });
+
+  console.log('jaime ~ floorLoader.load ~ scatter:', scatter.getPositions());
+  scene.add(_floor.scene);
 });
 
 

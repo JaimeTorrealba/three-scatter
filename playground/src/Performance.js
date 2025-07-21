@@ -114,7 +114,7 @@ const url = "/rocks.glb";
 let scatter
 toScatterLoader.load(url, (_model) => {
   const model = _model.scene;
-  scatter = new ThreeScatter(geometry, model, 1000, {
+  scatter = new ThreeScatter(1000, geometry, model, {
     randomFn: random,
     debug: true
   });

@@ -115,12 +115,11 @@ toScatterLoader.load(url, (_model) => {
     _floor.scene.scale.set(0.5, 0.5, 0.5);
 
     const model = _model.scene;
-    scatter = new ThreeScatter(floor, model, 100, {
+    scatter = new ThreeScatter(100, floor, model, {
       // seeds: 1,
       // precision: 0.1,
       //debug: true
     });
-    console.log('jaime ~ floorLoader.load ~ scatter:', scatter);
     scatter.scale.set(0.5, 0.5, 0.5);
     scene.add(scatter, _floor.scene);
   });

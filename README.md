@@ -25,6 +25,8 @@ Use `three-scatter` if you:
 NOTE:
 if performance is your must, [MeshSurfaceSampler](https://threejs.org/docs/?q=meshS#examples/en/math/MeshSurfaceSampler) is your go to, I provided a debug option to help you, but [MeshSurfaceSampler](https://threejs.org/docs/?q=meshS#examples/en/math/MeshSurfaceSampler) is much more performance since you can (and probably should) use [InstancedMesh](https://threejs.org/docs/?q=InstancedMesh#api/en/objects/InstancedMesh)
 
+Additionally you can use this library to generate only the positions
+
 ## Quick Demos
 
 - Multi-models: https://stackblitz.com/edit/vitejs-vite-kebufehm?file=package.json
@@ -38,18 +40,18 @@ if performance is your must, [MeshSurfaceSampler](https://threejs.org/docs/?q=me
 ```js
 import { ThreeScatter } from 'three-scatter'
 
+// Count: Number of samples
 // Surface: Geometry from which to sample
 // Model: 3D model or models to scatter
-// Count: Number of samples
 
-const scatter = new ThreeScatter(surface, model, count);
+const scatter = new ThreeScatter(count, surface, model);
 scene.add(scatter);
 ```
 
 You can also scatter more than one model:
 
 ```js
-const scatter = new ThreeScatter(surface, [model1, model2], count);
+const scatter = new ThreeScatter(count, surface, [model1, model2]);
 ```
 
 ### Modifying all the 3D objects
@@ -57,12 +59,25 @@ const scatter = new ThreeScatter(surface, [model1, model2], count);
 `three-scatter` comes with lots of handy method for you, one of the most common ones is `setAll` that allow you affect all the scattered models.
 
 ```js
-const scatter = new ThreeScatter(surface, [model1, model2, model3], count);
+const scatter = new ThreeScatter(count, surface, [model1, model2, model3]);
 
 scatter.setAll((model, index) => {
   model.scale.set(0.1, 0.1, 0.1);
 });
 ```
+
+### Take over mode
+
+If you don't need  `ThreeScatter` handle your models you can instantiate the class without any models, then get the positions:
+
+```js
+const scatter = new ThreeScatter(count, surface);
+const positions = scatter.getPositions()
+```
+
+you can still get different positions using the `setSeeds` method but you have to update your models manually.
+
+NOTE: Using this approach means that no other internal method will have effects in your model
 
 ### Methods
 
@@ -112,7 +127,7 @@ scatter.getPositions();
 ThreeScatter allows you more control using optional parameters.
 
 ```ts
-const scatter = new ThreeScatter(surface, model, count, {
+const scatter = new ThreeScatter(count, surface, model, {
   seeds<number>: 1, // seed to begin with
   useSkeletonUtils<boolean>: true // Necessary when you are scattering 3D models with rigging/animations
   randomFn<() => number>: Math.random() // if you want to have control over the random function, has to return a value from 0 to 1
@@ -121,10 +136,10 @@ const scatter = new ThreeScatter(surface, model, count, {
 
 ### Debug mode
 
-ThreeScatter comes with a debug mode that will replace all your models with a low poly mesh, and find the right position, easily.
+`ThreeScatter` comes with a debug mode that will replace all your models with a low poly mesh, and find the right position, easily.
 
 ```ts
-const scatter = new ThreeScatter(surface, model, count, {
+const scatter = new ThreeScatter(count, surface, model, {
   debug<boolean>: true,
   debugGeometry<Geometry>: new THREE.SphereGeometry(0.5, 3, 2) ,
   debugMaterial<Material>: new THREE.MeshBasicMaterial({ color: 0x800080 }),
@@ -143,7 +158,7 @@ scatter.removeDebug();
 You can now set the percentage of model distribution in case you are scattering more than one model.
 
 ```js
-const scatter = new ThreeScatter(surface, [model1, model2], count, {
+const scatter = new ThreeScatter(count, surface, [model1, model2], {
   distribution: [ 0.25, 0.75]
 });
 ```

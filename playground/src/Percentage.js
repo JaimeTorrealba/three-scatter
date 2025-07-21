@@ -109,7 +109,7 @@ toScatterLoader.load(url, (_floor) => {
           const floor = _floor.scene.children[0].geometry;
           _floor.scene.scale.set(0.5, 0.5, 0.5);
 
-          scatter = new ThreeScatter(floor, [_rock.scene, _trunk.scene, _rockTall.scene, _trunkLong.scene], 100, { distribution: [ 0.2, 0.1, 0.2, 0.5] });
+          scatter = new ThreeScatter(100, floor, [_rock.scene, _trunk.scene, _rockTall.scene, _trunkLong.scene], { distribution: [ 0.2, 0.1, 0.2, 0.5] });
           scatter.scale.set(0.5, 0.5, 0.5);
           scatter.setAll(model => {
             model.scale.set(3,3,3)
