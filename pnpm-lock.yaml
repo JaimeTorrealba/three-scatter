@@ -37,6 +37,19 @@ importers:
         specifier: ^6.2.0
         version: 6.3.5(@types/node@22.15.24)
 
+  playground:
+    dependencies:
+      '@three.ez/instanced-mesh':
+        specifier: ^0.3.4
+        version: 0.3.4(three@0.175.0)
+      three:
+        specifier: ^0.175.0
+        version: 0.175.0
+    devDependencies:
+      vite:
+        specifier: ^6.2.0
+        version: 6.3.5(@types/node@22.15.24)
+
 packages:
 
   '@esbuild/aix-ppc64@0.25.5':
@@ -450,6 +463,9 @@ packages:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
 
+  three@0.175.0:
+    resolution: {integrity: sha512-nNE3pnTHxXN/Phw768u0Grr7W4+rumGg/H6PgeseNJojkJtmeHJfZWi41Gp2mpXl1pg1pf1zjwR4McM1jTqkpg==}
+
   three@0.176.0:
     resolution: {integrity: sha512-PWRKYWQo23ojf9oZSlRGH8K09q7nRSWx6LY/HF/UUrMdYgN9i1e2OwJYHoQjwc6HF/4lvvYLC5YC1X8UJL2ZpA==}
 
@@ -658,6 +674,11 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.41.1':
     optional: true
 
+  '@three.ez/instanced-mesh@0.3.4(three@0.175.0)':
+    dependencies:
+      bvh.js: 0.0.13
+      three: 0.175.0
+
   '@three.ez/instanced-mesh@0.3.4(three@0.176.0)':
     dependencies:
       bvh.js: 0.0.13
@@ -830,6 +851,8 @@ snapshots:
   strip-ansi@6.0.1:
     dependencies:
       ansi-regex: 5.0.1
+
+  three@0.175.0: {}
 
   three@0.176.0: {}
 

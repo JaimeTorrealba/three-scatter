@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { Pane } from "https://cdn.skypack.dev/tweakpane@3.1.7";
 import { ThreeScatter } from 'three-scatter'
+import { InstancedMesh2 } from '@three.ez/instanced-mesh';
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -79,13 +80,6 @@ pane.addInput(options, "scale", {
     model.scale.set(options.scale, options.scale, options.scale);
   });
 });
-pane.addInput(options, "firstRockScale", {
-  min: 1,
-  max: 15,
-  step: 1
-}).on('change', () => {
-  scatter.children[0].scale.set(options.firstRockScale, options.firstRockScale, options.firstRockScale);
-});
 
 const removeBtn = pane.addButton({
   title: 'Remove collisions',
@@ -111,17 +105,18 @@ floorLoader.load("/surfaceSamplingTest.glb", (_floor) => {
   const floor = _floor.scene.children[0].geometry;
 
   scatter = new ThreeScatter(50, floor);
-  const myMesh = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.2, 16, 100), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-
   const positions = scatter.getPositions();
-  positions.forEach((position) => {
-    const mesh = myMesh.clone();
-    mesh.position.copy(position);
-    scene.add(mesh);
+
+  const geometry = new THREE.TorusGeometry(0.5, 0.2, 16, 100);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const instancedMesh = new InstancedMesh2(geometry, material, { capacity: 50 });
+
+  instancedMesh.addInstances(50, (obj, index) => {
+    const currentPos = positions[index];
+    obj.position.set(currentPos.x, currentPos.y, currentPos.z);
   });
 
-  console.log('jaime ~ floorLoader.load ~ scatter:', scatter.getPositions());
-  scene.add(_floor.scene);
+  scene.add(_floor.scene, instancedMesh);
 });
 
 
@@ -129,8 +124,8 @@ floorLoader.load("/surfaceSamplingTest.glb", (_floor) => {
  * Camera
  */
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
-camera.position.z = 15
-camera.position.y = 5
+camera.position.z = 45
+camera.position.y = 15
 scene.add(camera)
 
 /**

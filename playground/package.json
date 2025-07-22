@@ -12,6 +12,7 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
+    "@three.ez/instanced-mesh": "^0.3.4",
     "three": "^0.175.0"
   }
 }
