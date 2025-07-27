@@ -32,6 +32,7 @@ Additionally you can use this library to generate only the positions
 - Multi-models: https://stackblitz.com/edit/vitejs-vite-kebufehm?file=package.json
 - Animated models: https://stackblitz.com/edit/vitejs-vite-7fz6pccr?file=src%2Fmain.js
 - TresJs: https://stackblitz.com/edit/vitejs-vite-qpspyyen?file=src%2Fcomponents%2FTheExperience.vue
+- Takeover-mode (instanceMesh): https://stackblitz.com/edit/vitejs-vite-t3n4aqgb?file=src%2Fmain.js
 
 ## How to use it
 
