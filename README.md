@@ -31,8 +31,10 @@ Additionally you can use this library to generate only the positions
 
 - Multi-models: https://stackblitz.com/edit/vitejs-vite-kebufehm?file=package.json
 - Animated models: https://stackblitz.com/edit/vitejs-vite-7fz6pccr?file=src%2Fmain.js
-- TresJs: https://stackblitz.com/edit/vitejs-vite-qpspyyen?file=src%2Fcomponents%2FTheExperience.vue
+- TresJs (Vue.js): https://stackblitz.com/edit/vitejs-vite-qpspyyen?file=src%2Fcomponents%2FTheExperience.vue
+- R3F (react): https://stackblitz.com/edit/vitejs-vite-iulmyhla?file=src%2Fmain.jsx
 - Takeover-mode (instanceMesh): https://stackblitz.com/edit/vitejs-vite-t3n4aqgb?file=src%2Fmain.js
+- Takeover-mode (custom meshes): https://stackblitz.com/edit/vitejs-vite-5cvelshk?file=src%2Fmain.js
 
 ## How to use it
 
