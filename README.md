@@ -105,6 +105,17 @@ scatter.alignToSurfaceNormal();
 scatter.removeCollisions();
 ```
 
+#### Show model by axis
+
+```js
+// A normalize range between -1 and 1 to determine which axis to show your scattered models
+  scatter.setAxis(
+    [minX, maxX],
+    [minY, maxY],
+    [minZ, maxZ]
+  );
+```
+
 #### Clear group
 
 ```js
@@ -172,15 +183,6 @@ In order to set the distribution property, you need to have:
 1. An array of models
 2. A `distribution` property with equal length than the array of model
 3. All the numbers inside the `distribution` property needs to sum 1
-
-
-## TODO
-- [x] Distribution (when more than one model to scatter) should be base on %
-- [] Distribution by axis (base on the normals)
-- [] Avoid corners
-- [] Density
-- [] Merge geometries?
-- [] Clusters
 
 
 ## Contributing

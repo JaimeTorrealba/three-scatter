@@ -251,6 +251,26 @@ class ThreeScatter extends Group {
             callback(child, index);
         });
     }
+    setAxis(x: [min: number, max: number], y: [min: number, max: number], z: [min: number, max: number]) {
+        this.children.forEach((child) => {
+            const triangle = (child as MeshWithTriangle)._triangle;
+            if (triangle) {
+                const normal = triangle.getNormal(new Vector3());
+                const [minX, maxX] = x;
+                const [minY, maxY] = y;
+                const [minZ, maxZ] = z;
+                if (normal.y >= minY && normal.y <= maxY) {
+                    child.visible = true;
+                } else if (normal.x >= minX && normal.x <= maxX) {
+                    child.visible = true;
+                } else if (normal.z >= minZ && normal.z <= maxZ) {
+                    child.visible = true;
+                } else {
+                    child.visible = false;
+                }
+            }
+        });
+    }
     removeCollisions() {
         const meshes = this.children;
         const collisions = [];
