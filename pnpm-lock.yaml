@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@three.ez/instanced-mesh':
-        specifier: ^0.3.4
-        version: 0.3.4(three@0.176.0)
       alea:
         specifier: ^1.0.1
         version: 1.0.1
@@ -33,19 +30,6 @@ importers:
       typescript:
         specifier: ~5.7.2
         version: 5.7.3
-      vite:
-        specifier: ^6.2.0
-        version: 6.3.5(@types/node@22.15.24)
-
-  playground:
-    dependencies:
-      '@three.ez/instanced-mesh':
-        specifier: ^0.3.4
-        version: 0.3.4(three@0.175.0)
-      three:
-        specifier: ^0.175.0
-        version: 0.175.0
-    devDependencies:
       vite:
         specifier: ^6.2.0
         version: 6.3.5(@types/node@22.15.24)
@@ -302,11 +286,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@three.ez/instanced-mesh@0.3.4':
-    resolution: {integrity: sha512-iBFdxkLXa2YyfKHnkR+aJMgzIAHUbh95TCeBMDn7OYa2kflhFrNf4NairPXVNWlw0m1IlSS4vZWgJcyjroH2gA==}
-    peerDependencies:
-      three: '>=0.159.0'
-
   '@tweenjs/tween.js@23.1.3':
     resolution: {integrity: sha512-vJmvvwFxYuGnF2axRtPYocag6Clbb5YS7kLL+SO/TeVFzHqDIWrNKYtcsPMibjDx9O+bu+psAy9NKfWklassUA==}
 
@@ -335,9 +314,6 @@ packages:
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
-
-  bvh.js@0.0.13:
-    resolution: {integrity: sha512-7jVxKGyyATOwEoqFvghXoStJXkkmqf7JIXYEG44eMtMXQoeCwZL2n1z5/kZogFKvCaN7XweS2TKnqdyDrd0DJA==}
 
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -462,9 +438,6 @@ packages:
   strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
-
-  three@0.175.0:
-    resolution: {integrity: sha512-nNE3pnTHxXN/Phw768u0Grr7W4+rumGg/H6PgeseNJojkJtmeHJfZWi41Gp2mpXl1pg1pf1zjwR4McM1jTqkpg==}
 
   three@0.176.0:
     resolution: {integrity: sha512-PWRKYWQo23ojf9oZSlRGH8K09q7nRSWx6LY/HF/UUrMdYgN9i1e2OwJYHoQjwc6HF/4lvvYLC5YC1X8UJL2ZpA==}
@@ -674,16 +647,6 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.41.1':
     optional: true
 
-  '@three.ez/instanced-mesh@0.3.4(three@0.175.0)':
-    dependencies:
-      bvh.js: 0.0.13
-      three: 0.175.0
-
-  '@three.ez/instanced-mesh@0.3.4(three@0.176.0)':
-    dependencies:
-      bvh.js: 0.0.13
-      three: 0.176.0
-
   '@tweenjs/tween.js@23.1.3': {}
 
   '@types/estree@1.0.7': {}
@@ -711,8 +674,6 @@ snapshots:
   ansi-styles@4.3.0:
     dependencies:
       color-convert: 2.0.1
-
-  bvh.js@0.0.13: {}
 
   cliui@8.0.1:
     dependencies:
@@ -851,8 +812,6 @@ snapshots:
   strip-ansi@6.0.1:
     dependencies:
       ansi-regex: 5.0.1
-
-  three@0.175.0: {}
 
   three@0.176.0: {}
 

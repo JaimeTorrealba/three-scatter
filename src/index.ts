@@ -1,8 +1,7 @@
-import { BufferGeometry, Mesh, Group, Triangle, Material, Object3D, Box3, Vector3, Quaternion, SphereGeometry, MeshBasicMaterial } from 'three';
+import { BufferGeometry, Mesh, Group, Triangle, Material, Object3D, Box3, Vector3, Quaternion, SphereGeometry, MeshBasicMaterial, InstancedMesh } from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { createNoise2D } from 'simplex-noise'
 import alea from 'alea';
-import { InstancedMesh2 } from '@three.ez/instanced-mesh';
 
 // Extend Mesh to include _triangle property
 class MeshWithTriangle extends Mesh {
@@ -13,8 +12,13 @@ Base: geometry to scatter on
 Mesh: mesh or meshes to scatter
 Count: number of meshes to scatter
 Options:
-    precision: number of decimal places to round the random point to
-    default random function: for faces? 0 - 1 range
+    debug: enable debug mode; hides scattered meshes and shows instanced debug markers
+    debugGeometry: geometry used for debug markers when debug is enabled
+    debugMaterial: material used for debug markers when debug is enabled
+    seeds: PRNG seed for deterministic sampling across faces
+    randomFn: function returning a number in [0,1) to drive randomness
+    useSkeletonUtils: clone meshes via SkeletonUtils to preserve skeletons/skins
+    distribution: probabilities per mesh for multi-mesh sampling; must sum to 1
 */
 
 interface Options {
@@ -39,7 +43,7 @@ class ThreeScatter extends Group {
     debug: boolean;
     debugGeometry: BufferGeometry | undefined;
     debugMaterial: Material | undefined;
-    instancedMesh: InstancedMesh2 | undefined;
+    instancedMesh: InstancedMesh | undefined;
     distribution: number[] | undefined;
     // internals
     precision: number;
@@ -201,13 +205,17 @@ class ThreeScatter extends Group {
     #sampleDebug() {
         this.debugGeometry = this.debugGeometry ?? new SphereGeometry(0.5, 3, 2);
         this.debugMaterial = this.debugMaterial ?? new MeshBasicMaterial({ color: 0x800080 });
-        this.instancedMesh = new InstancedMesh2(this.debugGeometry, this.debugMaterial, { capacity: this.count, createEntities: true });
+        this.instancedMesh = new InstancedMesh(this.debugGeometry, this.debugMaterial, this.count);
 
-        this.instancedMesh.addInstances(this.count, (obj, index) => {
+        const dummy = new Object3D();
+        for (let index = 0; index < this.count; index++) {
             const currentPos = this.children[index].position;
-            obj.position.set(currentPos.x, currentPos.y, currentPos.z);
-        });
-        this.add(this.instancedMesh as unknown as Object3D);
+            dummy.position.set(currentPos.x, currentPos.y, currentPos.z);
+            dummy.updateMatrix();
+            this.instancedMesh.setMatrixAt(index, dummy.matrix);
+        }
+        this.instancedMesh.instanceMatrix.needsUpdate = true;
+        this.add(this.instancedMesh);
     }
     setDebug() {
         this.debug = true;
@@ -233,17 +241,20 @@ class ThreeScatter extends Group {
     setSeeds(seed = 1) {
         this.noise = createNoise2D(alea(seed));
         this.children.forEach((child, i) => {
-            if (child instanceof InstancedMesh2) return
+            if (child instanceof InstancedMesh) return
             const randomPoint = this.#generateRandomPointInTriangle(i);
             (child as Mesh).position.set(randomPoint.x, randomPoint.y, randomPoint.z);
             (child as MeshWithTriangle)._triangle = randomPoint.triangle;
         })
         if (this.instancedMesh) {
-            this.instancedMesh.instances.forEach((_instance, index) => {
+            const dummy = new Object3D();
+            for (let index = 0; index < this.count; index++) {
                 const currentPos = this.children[index].position;
-                _instance.position.set(currentPos.x, currentPos.y, currentPos.z)
-                _instance.updateMatrix()
-            })
+                dummy.position.set(currentPos.x, currentPos.y, currentPos.z);
+                dummy.updateMatrix();
+                this.instancedMesh.setMatrixAt(index, dummy.matrix);
+            }
+            this.instancedMesh.instanceMatrix.needsUpdate = true;
         }
     }
     setAll(callback: (model: Object3D, index: number) => void) {
