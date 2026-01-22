@@ -1,6 +1,5 @@
 import { BufferGeometry, Mesh, Group, Triangle, Material, Object3D, Box3, Vector3, Quaternion, SphereGeometry, MeshBasicMaterial, InstancedMesh } from 'three';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { createNoise2D } from 'simplex-noise'
 import alea from 'alea';
 
 // Extend Mesh to include _triangle property
@@ -47,11 +46,12 @@ class ThreeScatter extends Group {
     distribution: number[] | undefined;
     // internals
     precision: number;
+    prng: () => number;
     faces: Triangle[];
     positions: Vector3[];
-    noise: (x: number, y: number) => number;
+    noise: number;
 
-    constructor(count: number, base: BufferGeometry, mesh: Mesh, options: Options = {}) {
+    constructor(count: number, base: BufferGeometry, mesh: Mesh, options: Options = {}) {   
         super();
         this.base = base;
         this.mesh = mesh;
@@ -72,8 +72,8 @@ class ThreeScatter extends Group {
 
         //internals
         this.precision = 2;
-        const prng = alea(this.seeds);
-        this.noise = createNoise2D(prng);
+        this.prng = alea(this.seeds);
+        this.noise = this.#blueNoise2D(this.precision, -this.precision, this.prng());
         this.faces = [];
         this.positions = [];
         this.sample()
@@ -82,10 +82,11 @@ class ThreeScatter extends Group {
             this.setDebug()
         }
     }
-    #generateRandomPointInTriangle(index: number) {
+    #generateRandomPointInTriangle() {
         const randomTriangle = this.faces[Math.floor(this.randomFn() * this.faces.length)];
-        let r1 = Math.abs(+this.noise(index, 0).toFixed(this.precision));
-        let r2 = Math.abs(+this.noise(0, index).toFixed(this.precision));
+        let r1 = this.#blueNoise2D(this.precision, -this.precision, this.prng());
+        let r2 = this.#blueNoise2D(this.precision, -this.precision, this.prng());
+
         if (r1 + r2 > 1) {
             r1 = 1 - r1;
             r2 = 1 - r2;
@@ -139,7 +140,7 @@ class ThreeScatter extends Group {
         // If no mesh provided
         if (!this.mesh) {
             for (let i = 0; i < this.count; i++) {
-                this.#generateRandomPointInTriangle(i);
+                this.#generateRandomPointInTriangle();
             }
             return
         }
@@ -147,7 +148,7 @@ class ThreeScatter extends Group {
         // If only one model
         if (!Array.isArray(this.mesh)) {
             for (let i = 0; i < this.count; i++) {
-                const randomPoint = this.#generateRandomPointInTriangle(i);
+                const randomPoint = this.#generateRandomPointInTriangle();
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
@@ -162,7 +163,7 @@ class ThreeScatter extends Group {
                 let meshIndex = 0;
                 meshIndex = i % this.mesh.length;
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
-                const randomPoint = this.#generateRandomPointInTriangle(i);
+                const randomPoint = this.#generateRandomPointInTriangle();
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
                 (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
@@ -181,7 +182,7 @@ class ThreeScatter extends Group {
         }
 
         for (let i = 0; i < this.count; i++) {
-            const randomPoint = this.#generateRandomPointInTriangle(i);
+            const randomPoint = this.#generateRandomPointInTriangle();
             let meshIndex = 0;
 
             // Calculate cumulative distribution
@@ -238,11 +239,17 @@ class ThreeScatter extends Group {
             this.instancedMesh.visible = false;
         }
     }
+    #blueNoise2D(x: number, y: number, seed = 0) {
+        let n = x * 374761393 + y * 668265263 + seed * 69069;
+        n = (n ^ (n >> 13)) * 1274126177;
+        return ((n ^ (n >> 16)) >>> 0) / 4294967296;
+    }
     setSeeds(seed = 1) {
-        this.noise = createNoise2D(alea(seed));
-        this.children.forEach((child, i) => {
+        this.prng = alea(seed);
+        this.noise = this.#blueNoise2D(0, 1, this.prng());
+        this.children.forEach((child) => {
             if (child instanceof InstancedMesh) return
-            const randomPoint = this.#generateRandomPointInTriangle(i);
+            const randomPoint = this.#generateRandomPointInTriangle();
             (child as Mesh).position.set(randomPoint.x, randomPoint.y, randomPoint.z);
             (child as MeshWithTriangle)._triangle = randomPoint.triangle;
         })

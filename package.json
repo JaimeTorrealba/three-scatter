@@ -42,7 +42,6 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "alea": "^1.0.1",
-    "simplex-noise": "^4.0.3"
+    "alea": "^1.0.1"
   }
 }
