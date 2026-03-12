@@ -1,0 +1,92 @@
+// import { resolve } from 'pathe'
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  // site-level options
+  title: 'Three Scatter Docs',
+  description: 'Documentation official for three-scatter',
+
+    head: [
+    ['link', { rel: 'icon', type: 'image/svg', href: '/favicon.svg' }],
+    ['meta', { name: 'theme-color', content: '#82DBC5' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:site', content: '@tresjs_dev' }],
+    ['meta', { name: 'twitter:creator', content: '@tresjs_dev' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Cientos - TresJS' }],
+    [
+      'meta',
+      {
+        property: 'og:image',
+        content: '/og-banner.png',
+      },
+    ],
+    [
+      'meta',
+      {
+        property: 'twitter:image',
+        content: '/og-banner.png',
+      },
+    ],
+    ['script', { 'defer': 'true', 'data-site': 'OWBUVCJK', 'src': 'https://cdn.usefathom.com/script.js' }],
+  ],
+   themeConfig: {
+    logo: '/logo.svg',
+    search: {
+      provider: 'local',
+    },
+    // https://vitepress.dev/reference/default-theme-config
+    nav: [
+      { text: 'Guide', link: '/guide/' },
+    ],
+
+    sidebar: [
+      {
+        text: 'Guide',
+        items: [{ text: 'Introduction', link: '/guide/' }],
+      },
+      {
+        text: 'Examples',
+        items: [
+          { text: 'Multiple objects', link: '/guide/examples/multi-model' },
+          { text: 'Transformations', link: '/guide/examples/transformations' },
+          { text: 'Take over', link: '/guide/examples/take-over' },
+          { text: 'Seeds', link: '/guide/examples/seeds' },
+          { text: 'Align objects', link: '/guide/examples/align-models' },
+          { text: 'Remove collisions', link: '/guide/examples/remove-collisions' },
+          { text: 'Display by axis', link: '/guide/examples/display-by-axis' },
+          { text: 'Dispose', link: '/guide/examples/dispose' },
+          { text: 'Debug mode', link: '/guide/examples/debug-mode' },
+          { text: 'Distribution', link: '/guide/examples/distribution' },
+          { text: 'Model animation', link: '/guide/examples/model-animation' },
+        ].sort((a, b) => a.text.localeCompare(b.text)),
+      },
+      {
+        text: 'API',
+        items: [
+          { text: 'API specification', link: '/guide/api/' },
+        ],
+      },
+    ],
+
+    socialLinks: [
+      { icon: 'twitter', link: 'https://x.com/jaimebboyjt' },
+      { icon: 'bluesky', link: 'https://bsky.app/profile/jaimebboyjt.bsky.social' },
+      { icon: 'github', link: 'https://github.com/JaimeTorrealba/three-scatter' },
+    ],
+      vite: {
+    optimizeDeps: {
+      exclude: ['vitepress'],
+      include: ['three'],
+    },
+    server: {
+      hmr: {
+        overlay: false,
+      },
+    },
+    resolve: {
+      dedupe: ['three'],
+    },
+  },
+  },
+})
