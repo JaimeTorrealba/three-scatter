@@ -1,0 +1,24 @@
+# Three-scatter
+
+> Scatter meshes and 3D models across any Three.js geometry. Inspired by GScatter for Blender.
+
+`ThreeScatter` extends `THREE.Group` and places copies of one or more meshes on the surface of a `BufferGeometry` using face sampling. It supports animated/rigged models, per-seed reproducibility, collision removal, surface-normal alignment, axis-based visibility filtering, debug mode, and custom distribution weights.
+
+## Docs
+
+- [Guide & Introduction](./guide/index.md): Installation, basic usage, and when to use three-scatter vs MeshSurfaceSampler.
+- [API Reference](./guide/api/index.md): Full constructor, Options interface, and all public methods with TypeScript signatures.
+
+## Examples
+
+- [Multiple Objects](./guide/examples/multi-model.md): Scatter more than one model at once.
+- [Transformations](./guide/examples/transformations.md): Apply transforms to the whole group or individual objects.
+- [Align to Surface](./guide/examples/align-models.md): Orient objects along face normals.
+- [Seeds](./guide/examples/seeds.md): Reproducible, tweakable layouts.
+- [Remove Collisions](./guide/examples/remove-collisions.md): Automatically cull overlapping objects.
+- [Display by Axis](./guide/examples/display-by-axis.md): Show/hide objects by normalized axis range.
+- [Take Over Mode](./guide/examples/take-over.md): Only get positions and manage your own objects.
+- [Debug Mode](./guide/examples/debug-mode.md): Low-poly proxy markers for fast iteration.
+- [Distribution](./guide/examples/distribution.md): Control per-model scatter percentages.
+- [Model Animation](./guide/examples/model-animation.md): Scatter rigged/animated models.
+- [Dispose](./guide/examples/dispose.md): Clean up geometries and materials.

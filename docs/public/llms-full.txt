@@ -1,0 +1,264 @@
+# Three-scatter — Full Documentation
+
+> Scatter meshes and 3D models across any Three.js geometry. Inspired by GScatter for Blender.
+
+Package: `@jaimebboyjt/three-scatter`
+Repository: https://github.com/JaimeTorrealba/three-scatter
+
+---
+
+## Introduction
+
+`ThreeScatter` extends `THREE.Group`. It samples random points on the faces of a `BufferGeometry` and places clones of one or more meshes at those points.
+
+### When to use three-scatter
+
+Three.js ships `MeshSurfaceSampler` for high-performance instanced sampling. Use `three-scatter` instead when you need:
+
+- Complex 3D models (animations, rigging, skinning)
+- Surface-normal alignment per object
+- Real-time seed tweaking (e.g. leva / dat.GUI panels)
+- Automatic collision removal
+- Axis-filtered visibility
+- Per-model distribution weights
+
+> If raw performance is the priority, prefer `MeshSurfaceSampler` with `InstancedMesh`.
+
+### Installation
+
+```bash
+npm i @jaimebboyjt/three-scatter
+# or
+yarn add @jaimebboyjt/three-scatter
+# or
+pnpm add @jaimebboyjt/three-scatter
+```
+
+### Basic Usage
+
+```js
+import { ThreeScatter } from '@jaimebboyjt/three-scatter'
+
+const scatter = new ThreeScatter(count, surface, model);
+scene.add(scatter);
+```
+
+---
+
+## API Reference
+
+### Constructor
+
+```ts
+new ThreeScatter(count: number, base: BufferGeometry, mesh?: Mesh | Mesh[], options?: Options)
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `count` | `number` | Number of objects to scatter. |
+| `base` | `BufferGeometry` | Surface geometry to scatter on. |
+| `mesh` | `Mesh \| Mesh[]` | Object or array of objects to scatter. Omit for take-over mode. |
+| `options` | `Options` | Optional configuration (see below). |
+
+### Options interface
+
+```ts
+interface Options {
+  seeds?: number          // default: 1
+  randomFn?: () => number // default: Math.random
+  useSkeletonUtils?: boolean  // default: false
+  distribution?: number[]     // default: undefined
+  debug?: boolean             // default: false
+  debugGeometry?: BufferGeometry  // default: SphereGeometry(0.5, 3, 2)
+  debugMaterial?: Material        // default: MeshBasicMaterial({ color: 0x800080 })
+}
+```
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `seeds` | `number` | `1` | PRNG seed for reproducible layouts. |
+| `randomFn` | `() => number` | `Math.random` | Custom random function returning a value in `[0, 1)`. |
+| `useSkeletonUtils` | `boolean` | `false` | Use `SkeletonUtils.clone` — required for rigged/animated models. |
+| `distribution` | `number[]` | `undefined` | Per-model probability weights. Must match mesh array length and sum to `1`. |
+| `debug` | `boolean` | `false` | Enable debug proxy mode at construction. |
+| `debugGeometry` | `BufferGeometry` | `SphereGeometry(0.5,3,2)` | Geometry for debug markers. |
+| `debugMaterial` | `Material` | `MeshBasicMaterial({color:0x800080})` | Material for debug markers. |
+
+### Methods
+
+#### `setSeeds(seed?)`
+```ts
+setSeeds(seed?: number): void
+```
+Re-seeds the PRNG and repositions all scattered objects. Useful for real-time tweaking.
+
+#### `setAll(callback)`
+```ts
+setAll(callback: (model: Object3D, index: number) => void): void
+```
+Iterates every scattered child. Use it to apply per-object scale, rotation, or custom logic.
+
+#### `setAxis(x, y, z)`
+```ts
+setAxis(
+  x: [min: number, max: number],
+  y: [min: number, max: number],
+  z: [min: number, max: number]
+): void
+```
+Shows or hides objects based on the surface normal at their position. Ranges are normalized between `-1` and `1`.
+
+#### `alignToSurfaceNormal()`
+```ts
+alignToSurfaceNormal(): void
+```
+Rotates each object so its `Y+` axis aligns with the face normal of the triangle it was placed on.
+
+#### `removeCollisions()`
+```ts
+removeCollisions(): void
+```
+Computes AABBs for all children and removes any that intersect another.
+
+#### `setDebug()`
+```ts
+setDebug(): void
+```
+Hides all scattered objects and shows an `InstancedMesh` of low-poly proxies.
+
+#### `removeDebug()`
+```ts
+removeDebug(): void
+```
+Restores scattered object visibility and hides the debug proxy mesh.
+
+#### `getFaces()`
+```ts
+getFaces(): Triangle[]
+```
+Returns all `THREE.Triangle` faces extracted from the surface geometry.
+
+#### `getPositions()`
+```ts
+getPositions(): Vector3[]
+```
+Returns all sampled `THREE.Vector3` positions. Useful in take-over mode.
+
+#### `cleanGroup()`
+```ts
+cleanGroup(): void
+```
+Disposes geometry and materials of every child mesh, then clears the group.
+
+---
+
+## Examples
+
+### Multiple objects
+
+```js
+import { ThreeScatter } from '@jaimebboyjt/three-scatter'
+
+const scatter = new ThreeScatter(count, surface, [model1, model2]);
+scene.add(scatter);
+```
+
+### Seeds
+
+```js
+const scatter = new ThreeScatter(count, surface, model, { seeds: 1 });
+
+// Change at any time:
+scatter.setSeeds(5);
+```
+
+### Align to surface normal
+
+```js
+const scatter = new ThreeScatter(count, surface, model);
+scatter.alignToSurfaceNormal();
+```
+
+### Remove collisions
+
+```js
+const scatter = new ThreeScatter(count, surface, model);
+scatter.removeCollisions();
+```
+
+### Display by axis
+
+```js
+// Show only objects on the upper half of the Y axis:
+scatter.setAxis([-1, 1], [0, 1], [-1, 1]);
+```
+
+### Take-over mode (positions only)
+
+```js
+const scatter = new ThreeScatter(count, surface);
+const positions = scatter.getPositions();
+
+positions.forEach((pos) => {
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.copy(pos);
+  scene.add(mesh);
+});
+```
+
+### Debug mode
+
+```js
+import * as THREE from 'three'
+
+const scatter = new ThreeScatter(count, surface, model, {
+  debug: true,
+  debugGeometry: new THREE.SphereGeometry(0.5, 3, 2),
+  debugMaterial: new THREE.MeshBasicMaterial({ color: 0x800080 }),
+});
+
+// Toggle after construction:
+scatter.setDebug();
+scatter.removeDebug();
+```
+
+### Distribution (multi-model)
+
+```js
+// 25% model1, 75% model2
+const scatter = new ThreeScatter(count, surface, [model1, model2], {
+  distribution: [0.25, 0.75],
+});
+```
+
+### Animated / rigged models
+
+```js
+const scatter = new ThreeScatter(count, surface, animatedModel, {
+  useSkeletonUtils: true,
+});
+```
+
+### Per-object transforms
+
+```js
+scatter.setAll((model, index) => {
+  const s = 0.5 + Math.random();
+  model.scale.set(s, s, s);
+});
+```
+
+### Dispose
+
+```js
+scatter.cleanGroup();
+```
+
+---
+
+## Notes
+
+- `ThreeScatter` extends `THREE.Group`, so all standard `Object3D` / `Group` methods (`.position`, `.scale`, `.rotation`, `.add`, `.remove`, etc.) are available on the instance.
+- `distribution` requires an array of equal length to the `mesh` array with values summing to exactly `1`.
+- `useSkeletonUtils` must be `true` whenever scattering models that contain a `SkinnedMesh` or skeletal animations.
+- In take-over mode (no `mesh` argument), none of the object-management methods (`alignToSurfaceNormal`, `removeCollisions`, `setDebug`, etc.) will have any effect since the group has no children.

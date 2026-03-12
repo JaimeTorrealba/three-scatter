@@ -4,7 +4,7 @@
 
 Spread all types of objects/models into a geometry easily
 
-![Basic scene](./public/Multi_model.gif) BASIC SCENE
+<!-- ![Basic scene](./public/Multi_model.gif) BASIC SCENE -->
 
 ## Why to use it
 
