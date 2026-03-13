@@ -5,7 +5,7 @@ description: Automatically remove scattered objects that collide with each other
 
 # Remove Collisions
 
-DEMO
+<DocsDemo src="/demos/remove-collisions.html" />
 
 `ThreeScatter` can detect and remove objects that collide with other scattered objects. Call `removeCollisions` after instantiation:
 

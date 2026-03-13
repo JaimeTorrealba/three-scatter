@@ -1,5 +1,8 @@
-// import { resolve } from 'pathe'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   // site-level options
@@ -59,6 +62,8 @@ export default defineConfig({
           { text: 'Debug mode', link: '/guide/examples/debug-mode' },
           { text: 'Distribution', link: '/guide/examples/distribution' },
           { text: 'Model animation', link: '/guide/examples/model-animation' },
+          { text: 'React three fiber', link: '/guide/examples/react-three-fiber' },
+          { text: 'Tres.js', link: '/guide/examples/tres-js' },
         ].sort((a, b) => a.text.localeCompare(b.text)),
       },
       {
@@ -86,6 +91,9 @@ export default defineConfig({
     },
     resolve: {
       dedupe: ['three'],
+      alias: {
+        'three-scatter': resolve(__dirname, '../../src/index.ts'),
+      },
     },
   },
   },

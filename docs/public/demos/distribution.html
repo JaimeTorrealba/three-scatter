@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distribution</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #333; overflow: hidden; font-family: sans-serif; }
+    canvas { display: block; }
+    #ui {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+    }
+    .legend {
+      display: flex;
+      gap: 14px;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      backdrop-filter: blur(6px);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #fff;
+      font-size: 13px;
+    }
+    .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://esm.sh/three@0.176.0",
+      "three/addons/": "https://esm.sh/three@0.176.0/examples/jsm/",
+      "three-scatter": "https://esm.sh/@jaimebboyjt/three-scatter@0.4.0"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="ui">
+    <div class="legend">
+      <div class="legend-item">
+        <div class="dot" style="background:#c47a3a"></div>
+        <span>Cone — 25%</span>
+      </div>
+      <div class="legend-item">
+        <div class="dot" style="background:#4a8fd4"></div>
+        <span>Sphere — 75%</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+    import { ThreeScatter } from 'three-scatter'
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setClearColor('#333')
+    document.body.appendChild(renderer.domElement)
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200)
+    camera.position.set(0, 4, 14)
+    scene.add(camera)
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7))
+    const dir = new THREE.DirectionalLight(0xffffff, 1.2)
+    dir.position.set(8, 12, 8)
+    scene.add(dir)
+
+    const surfaceGeo = new THREE.SphereGeometry(5, 32, 32)
+    scene.add(new THREE.Mesh(surfaceGeo, new THREE.MeshStandardMaterial({ color: 0x3a6b4e })))
+
+    const model1 = new THREE.Mesh(
+      new THREE.ConeGeometry(0.22, 0.8, 7),
+      new THREE.MeshStandardMaterial({ color: 0xc47a3a })
+    )
+    const model2 = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22, 8, 6),
+      new THREE.MeshStandardMaterial({ color: 0x4a8fd4 })
+    )
+
+    const scatter = new ThreeScatter(100, surfaceGeo, [model1, model2], {
+      distribution: [0.25, 0.75],
+    })
+    scene.add(scatter)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.08
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    })
+
+    ;(function animate() {
+      requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    })()
+  </script>
+</body>
+</html>

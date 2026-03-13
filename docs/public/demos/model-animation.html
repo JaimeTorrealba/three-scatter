@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Animation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #333; overflow: hidden; font-family: sans-serif; }
+    canvas { display: block; }
+    #ui { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; align-items: center; }
+    button {
+      padding: 6px 14px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      backdrop-filter: blur(6px);
+      transition: background 0.2s;
+    }
+    button:hover { background: rgba(255,255,255,0.15); }
+    .info { color: #fff; font-size: 13px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://esm.sh/three@0.176.0",
+      "three/addons/": "https://esm.sh/three@0.176.0/examples/jsm/",
+      "three-scatter": "https://esm.sh/@jaimebboyjt/three-scatter@0.4.0"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="ui">
+    <button id="toggleBtn">Pause</button>
+    <span class="info">useSkeletonUtils: true for rigged models</span>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three'
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+    import { ThreeScatter } from 'three-scatter'
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setClearColor('#333')
+    document.body.appendChild(renderer.domElement)
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200)
+    camera.position.set(0, 4, 14)
+    scene.add(camera)
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7))
+    const dir = new THREE.DirectionalLight(0xffffff, 1.2)
+    dir.position.set(8, 12, 8)
+    scene.add(dir)
+
+    const surfaceGeo = new THREE.SphereGeometry(5, 32, 32)
+    scene.add(new THREE.Mesh(surfaceGeo, new THREE.MeshStandardMaterial({ color: 0x3a6b4e })))
+
+    // Compound "model" to make per-instance animation visible
+    const model = new THREE.Group()
+    model.add(new THREE.Mesh(
+      new THREE.CylinderGeometry(0.1, 0.15, 0.35, 8),
+      new THREE.MeshStandardMaterial({ color: 0x8b6914 })
+    ))
+    const arm = new THREE.Mesh(
+      new THREE.BoxGeometry(0.5, 0.08, 0.08),
+      new THREE.MeshStandardMaterial({ color: 0xc47a3a })
+    )
+    arm.position.y = 0.28
+    model.add(arm)
+
+    // useSkeletonUtils: true is required for real rigged / skeletal animated models
+    const scatter = new ThreeScatter(35, surfaceGeo, model, { useSkeletonUtils: false })
+    scene.add(scatter)
+
+    // Store each child's arm mesh for animation
+    const arms = scatter.children.map(child => child.children[1])
+
+    const clock = new THREE.Clock()
+    let paused = false
+
+    document.getElementById('toggleBtn').addEventListener('click', function () {
+      paused = !paused
+      this.textContent = paused ? 'Play' : 'Pause'
+      if (!paused) clock.start()
+    })
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.08
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    })
+
+    ;(function animate() {
+      requestAnimationFrame(animate)
+      if (!paused) {
+        const t = clock.getElapsedTime()
+        arms.forEach((arm, i) => {
+          if (arm) arm.rotation.y = t * 2 + i * 0.55
+        })
+      }
+      controls.update()
+      renderer.render(scene, camera)
+    })()
+  </script>
+</body>
+</html>

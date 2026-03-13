@@ -5,7 +5,7 @@ description: Replace scattered objects with low-poly proxies to quickly find the
 
 # Debug Mode
 
-DEMO
+<DocsDemo src="/demos/debug-mode.html" />
 
 Debug mode replaces all scattered models with a low-poly mesh so you can quickly iterate on positions without the overhead of loading full assets.
 

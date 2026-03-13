@@ -5,9 +5,9 @@ description: Align scattered objects to the surface normal so they orient correc
 
 # Align Objects to Surface
 
-DEMO
+<DocsDemo src="/demos/align.html" />
 
-By default, scattered objects keep their original orientation. Call `alignToSurfaceNormal` to align each object's Y+ axis with the normal of the surface at its scatter point.
+By default, scattered objects keep their original orientation. Call `alignToSurfaceNormal()` to align each object's Y+ axis with the normal of the surface at its scatter point.
 
 ```js
 import { ThreeScatter } from 'three-scatter'

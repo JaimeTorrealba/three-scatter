@@ -9,7 +9,7 @@ description: how to apply transformation to the scattered objects
 
 `three-scatter` extend from [`THREE.Group`](https://threejs.org/docs/?q=group#Group) and you can apply affine transformation to the whole group.
 
-DEMO
+<DocsDemo src="/demos/transformations-group.html" />
 
 ```js{4}
 import { ThreeScatter } from 'three-scatter'
@@ -21,7 +21,7 @@ scatter.scale.set(0.5,0.5,0.5);
 
 ## Modifying individuals models
 
-DEMO
+<DocsDemo src="/demos/transformations-individual.html" />
 
 `three-scatter` provides `setAll` method that allow you affect all the scattered models.
 

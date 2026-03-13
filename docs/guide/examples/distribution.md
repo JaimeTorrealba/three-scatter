@@ -5,7 +5,7 @@ description: Control the percentage of each model when scattering multiple objec
 
 # Distribution
 
-DEMO
+<DocsDemo src="/demos/distribution.html" />
 
 When scattering more than one model you can define how each model is distributed across the surface using the `distribution` option.
 
