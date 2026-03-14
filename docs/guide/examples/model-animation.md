@@ -5,7 +5,9 @@ description: Scatter animated 3D models with rigging using ThreeScatter
 
 # Model Animation
 
-<DocsDemo src="/demos/model-animation.html" />
+<DocsDemo>
+    <ModelAnimation />
+</DocsDemo>
 
 `ThreeScatter` supports scattering 3D models that include animations and rigging. Enable skeleton utils via the `useSkeletonUtils` option so clones are handled correctly:
 

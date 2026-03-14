@@ -5,7 +5,9 @@ description: Align scattered objects to the surface normal so they orient correc
 
 # Align Objects to Surface
 
-<DocsDemo src="/demos/align.html" />
+<DocsDemo >
+    <Align />
+</DocsDemo >
 
 By default, scattered objects keep their original orientation. Call `alignToSurfaceNormal()` to align each object's Y+ axis with the normal of the surface at its scatter point.
 

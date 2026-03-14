@@ -5,7 +5,9 @@ description: Simple example how to scatter more than one object
 
 # Scattering multiples objects
 
-<DocsDemo src="/demos/multi-model.html" />
+<DocsDemo>
+    <MultiModel />
+</DocsDemo>
 
 You can also scatter more than one model/mesh just by passing an array to the constructor
 

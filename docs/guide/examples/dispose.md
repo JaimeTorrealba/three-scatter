@@ -5,7 +5,9 @@ description: Properly dispose all geometries and materials from a ThreeScatter i
 
 # Dispose
 
-<DocsDemo src="/demos/dispose.html" />
+<DocsDemo>
+    <Dispose />
+</DocsDemo>
 
 When you no longer need a scatter instance, call `cleanGroup` to dispose all geometries and materials and remove all meshes from the group.
 

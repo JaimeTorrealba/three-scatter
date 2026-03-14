@@ -1,9 +1,13 @@
 import DefaultTheme from 'vitepress/theme'
-import DocsDemo from '../components/DocsDemo.vue'
+
+const components = import.meta.glob('../components/*.vue', { eager: true })
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
-    app.component('DocsDemo', DocsDemo)
+    for (const path in components) {
+      const name = path.match(/\/([^/]+)\.vue$/)[1]
+      app.component(name, components[path].default)
+    }
   },
 }

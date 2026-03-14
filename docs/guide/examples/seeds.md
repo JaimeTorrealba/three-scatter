@@ -5,7 +5,9 @@ description: Use seeds to get reproducible and tweakable scatter layouts
 
 # Seeds
 
-<DocsDemo src="/demos/seeds.html" />
+<DocsDemo>
+    <Seeds />
+</DocsDemo>
 
 Seeds allow you to control the randomness of the scatter. By tweaking the seed value you can find the layout that best fits your scene.
 

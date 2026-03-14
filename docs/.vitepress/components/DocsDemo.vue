@@ -1,14 +1,14 @@
 <script setup>
-defineProps({ src: { type: String, required: true } })
 </script>
 
 <template>
   <div class="docs-demo">
-    <iframe :src="src" loading="lazy" />
+    <slot />
+    <canvas id="webGl" />
   </div>
 </template>
 
-<style scoped>
+<style>
 .docs-demo {
   position: relative;
   width: 100%;
@@ -17,11 +17,18 @@ defineProps({ src: { type: String, required: true } })
   overflow: hidden;
   border: 1px solid var(--vp-c-divider);
   margin: 1.5rem 0;
-}
-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .tp-dfwv {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+  }
 }
 </style>

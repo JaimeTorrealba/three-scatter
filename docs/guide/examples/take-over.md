@@ -5,7 +5,9 @@ description: Use ThreeScatter in take over mode to control your own objects and 
 
 # Take Over Mode
 
-<DocsDemo src="/demos/take-over.html" />
+<DocsDemo>
+    <TakeOver />
+</DocsDemo>
 
 If you don't need `ThreeScatter` to handle your models, you can instantiate the class without any models and retrieve the positions yourself.
 

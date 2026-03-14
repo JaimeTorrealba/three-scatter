@@ -5,7 +5,9 @@ description: Show or hide scattered objects based on a normalized range along ea
 
 # Display by Axis
 
-<DocsDemo src="/demos/display-by-axis.html" />
+<DocsDemo>
+    <DisplayByAxis />
+</DocsDemo>
 
 You can control which scattered objects are visible by filtering them along the X, Y, and Z axes. Ranges are normalized between `-1` and `1`.
 
