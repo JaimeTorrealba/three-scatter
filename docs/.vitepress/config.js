@@ -41,6 +41,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Guide', link: '/guide/' },
+      { text: 'API', link: '/guide/api/' },
     ],
 
     sidebar: [
@@ -62,6 +63,7 @@ export default defineConfig({
           { text: 'Debug mode', link: '/guide/examples/debug-mode' },
           { text: 'Distribution', link: '/guide/examples/distribution' },
           { text: 'Model animation', link: '/guide/examples/model-animation' },
+          { text: 'Clusters', link: '/guide/examples/clusters' },
           { text: 'React three fiber', link: '/guide/examples/react-three-fiber' },
           { text: 'Tres.js', link: '/guide/examples/tres-js' },
         ].sort((a, b) => a.text.localeCompare(b.text)),

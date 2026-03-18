@@ -41,6 +41,7 @@
     "@types/node": "^22.15.24",
     "@types/three": "^0.165.0",
     "rollup-plugin-visualizer": "^6.0.1",
+    "tweakpane": "^4.0.5",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
     "vitepress": "2.0.0-alpha.16"

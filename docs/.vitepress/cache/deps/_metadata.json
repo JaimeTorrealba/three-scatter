@@ -1,79 +1,91 @@
 {
-  "hash": "866db40a",
+  "hash": "6d693475",
   "configHash": "fc09fc09",
-  "lockfileHash": "e09ece0a",
-  "browserHash": "864f813d",
+  "lockfileHash": "aadac833",
+  "browserHash": "7fee0741",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/.pnpm/vue@3.5.29_typescript@5.7.3/node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "164e05a3",
+      "fileHash": "cf928d83",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/.pnpm/@vue+devtools-api@8.0.7/node_modules/@vue/devtools-api/dist/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "f11e89d1",
+      "fileHash": "64fdba79",
       "needsInterop": false
     },
     "vitepress > @vueuse/core": {
       "src": "../../../../node_modules/.pnpm/@vueuse+core@14.2.1_vue@3.5.29_typescript@5.7.3_/node_modules/@vueuse/core/dist/index.js",
       "file": "vitepress___@vueuse_core.js",
-      "fileHash": "ed698f03",
+      "fileHash": "8e3c3511",
       "needsInterop": false
     },
     "vitepress > @vueuse/integrations/useFocusTrap": {
       "src": "../../../../node_modules/.pnpm/@vueuse+integrations@14.2.1_c0847d2358a9a2f312edfe4c24833411/node_modules/@vueuse/integrations/dist/useFocusTrap.js",
       "file": "vitepress___@vueuse_integrations_useFocusTrap.js",
-      "fileHash": "cf32376d",
+      "fileHash": "60239b78",
       "needsInterop": false
     },
     "vitepress > mark.js/src/vanilla.js": {
       "src": "../../../../node_modules/.pnpm/mark.js@8.11.1/node_modules/mark.js/src/vanilla.js",
       "file": "vitepress___mark__js_src_vanilla__js.js",
-      "fileHash": "7c363fa1",
+      "fileHash": "b2e0e9ff",
       "needsInterop": false
     },
     "vitepress > minisearch": {
       "src": "../../../../node_modules/.pnpm/minisearch@7.2.0/node_modules/minisearch/dist/es/index.js",
       "file": "vitepress___minisearch.js",
-      "fileHash": "4b16265f",
+      "fileHash": "88ed5bd9",
       "needsInterop": false
     },
     "alea": {
       "src": "../../../../node_modules/.pnpm/alea@1.0.1/node_modules/alea/alea.js",
       "file": "alea.js",
-      "fileHash": "25bfeabf",
+      "fileHash": "caaae549",
       "needsInterop": true
     },
     "three": {
       "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/build/three.module.js",
       "file": "three.js",
-      "fileHash": "97439af8",
+      "fileHash": "19107aa8",
       "needsInterop": false
     },
     "three/addons/controls/OrbitControls.js": {
       "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/controls/OrbitControls.js",
       "file": "three_addons_controls_OrbitControls__js.js",
-      "fileHash": "ccdecff4",
+      "fileHash": "7799c841",
       "needsInterop": false
     },
     "three/examples/jsm/utils/SkeletonUtils.js": {
       "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/utils/SkeletonUtils.js",
       "file": "three_examples_jsm_utils_SkeletonUtils__js.js",
-      "fileHash": "d5b9cb65",
+      "fileHash": "c7e7d494",
       "needsInterop": false
     },
     "three/examples/jsm/loaders/GLTFLoader": {
       "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
       "file": "three_examples_jsm_loaders_GLTFLoader.js",
-      "fileHash": "c35b6d2e",
+      "fileHash": "14c86283",
       "needsInterop": false
     },
     "three/addons/controls/OrbitControls": {
       "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/controls/OrbitControls.js",
       "file": "three_addons_controls_OrbitControls.js",
-      "fileHash": "c616612e",
+      "fileHash": "a313823c",
+      "needsInterop": false
+    },
+    "three/addons/loaders/EXRLoader.js": {
+      "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/loaders/EXRLoader.js",
+      "file": "three_addons_loaders_EXRLoader__js.js",
+      "fileHash": "fba1048c",
+      "needsInterop": false
+    },
+    "tweakpane": {
+      "src": "../../../../node_modules/.pnpm/tweakpane@4.0.5/node_modules/tweakpane/dist/tweakpane.js",
+      "file": "tweakpane.js",
+      "fileHash": "e38e81ca",
       "needsInterop": false
     }
   },

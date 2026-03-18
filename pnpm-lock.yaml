@@ -24,6 +24,9 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^6.0.1
         version: 6.0.1(rollup@4.59.0)
+      tweakpane:
+        specifier: ^4.0.5
+        version: 4.0.5
       typescript:
         specifier: ~5.7.2
         version: 5.7.3
@@ -1054,6 +1057,9 @@ packages:
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
 
+  tweakpane@4.0.5:
+    resolution: {integrity: sha512-rxEXdSI+ArlG1RyO6FghC4ZUX8JkEfz8F3v1JuteXSV0pEtHJzyo07fcDG+NsJfN5L39kSbCYbB9cBGHyuI/tQ==}
+
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
     engines: {node: '>=14.17'}
@@ -2057,6 +2063,8 @@ snapshots:
       picomatch: 4.0.3
 
   trim-lines@3.0.1: {}
+
+  tweakpane@4.0.5: {}
 
   typescript@5.7.3: {}
 

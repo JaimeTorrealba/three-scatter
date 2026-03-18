@@ -6,9 +6,10 @@ import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";
 import { createSphere } from "../utils/demoSphere";
 import { createOrbitControls } from "../utils/orbitControls";
+import { createEnvironmentTexture } from "../utils/environmentTexture";
 import { ThreeScatter } from "three-scatter";
 import { nextTick, onMounted } from "vue";
-import { Pane } from "https://esm.sh/tweakpane@4";
+import { Pane } from "tweakpane";
 
 onMounted(async () => {
   await nextTick();
@@ -17,7 +18,8 @@ onMounted(async () => {
   const scene = new Scene();
 
   const camera = createCamera(scene);
-  const lights = createLights(scene);
+  createLights(scene);
+  createEnvironmentTexture(scene, renderer);
   const sphere = createSphere(scene);
   const control = createOrbitControls(camera, renderer.domElement);
 

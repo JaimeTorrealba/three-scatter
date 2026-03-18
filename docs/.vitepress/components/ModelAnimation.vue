@@ -1,42 +1,44 @@
 <script setup>
-import { Scene, Mesh, Group, CylinderGeometry, BoxGeometry, MeshStandardMaterial, Clock } from "three";
+import { Scene, Clock, AnimationMixer } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { createCamera } from "../utils/camera";
 import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";
-import { createSphere } from "../utils/demoSphere";
+import { createPlane } from "../utils/demoPlane";
 import { createOrbitControls } from "../utils/orbitControls";
+import { createEnvironmentTexture } from "../utils/environmentTexture";
 import { ThreeScatter } from "three-scatter";
 import { nextTick, onMounted } from "vue";
+import { Pane } from "tweakpane";
 
 onMounted(async () => {
   await nextTick();
-  const { Pane } = await import('https://esm.sh/tweakpane@4');
 
   const renderer = createRenderer();
   const scene = new Scene();
   const camera = createCamera(scene);
+  camera.position.set(0, 5, 10);
   createLights(scene);
-  const sphere = createSphere(scene);
+  createEnvironmentTexture(scene, renderer);
+  const plane = createPlane(scene);
   const control = createOrbitControls(camera, renderer.domElement);
 
-  const model = new Group();
-  model.add(new Mesh(
-    new CylinderGeometry(0.1, 0.15, 0.35, 8),
-    new MeshStandardMaterial({ color: 0x8b6914 })
-  ));
-  const arm = new Mesh(
-    new BoxGeometry(0.5, 0.08, 0.08),
-    new MeshStandardMaterial({ color: 0xc47a3a })
-  );
-  arm.position.y = 0.28;
-  model.add(arm);
-
-  const scatter = new ThreeScatter(35, sphere.geometry, model, { useSkeletonUtils: false });
-  scene.add(scatter);
-
-  const arms = scatter.children.map(child => child.children[1]);
   const clock = new Clock();
   let paused = false;
+  let mixers = [];
+
+  new GLTFLoader().load('/models/Mushnub.glb', (_model) => {
+    const scatter = new ThreeScatter(15, plane.geometry, _model.scene, { useSkeletonUtils: true });
+    scatter.setAll((model, i) => {
+      model.scale.set(0.5, 0.5, 0.5);
+      const mixer = new AnimationMixer(model);
+      mixer.clipAction(_model.animations[0]).play();
+      mixers.push(mixer);
+    });
+    scatter.rotation.x = -Math.PI / 2;
+    scatter.alignToSurfaceNormal();
+    scene.add(scatter);
+  });
 
   const container = document.getElementById('webGl').parentElement;
   const pane = new Pane({ container });
@@ -44,16 +46,20 @@ onMounted(async () => {
   btn.on('click', () => {
     paused = !paused;
     btn.title = paused ? 'Play' : 'Pause';
-    if (!paused) clock.start();
+  });
+  pane.addButton({ title: 'Full Screen' }).on('click', () => {
+    if (!document.fullscreenElement) {
+      container.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
   });
 
   function animate() {
+    const delta = clock.getDelta();
     control.update();
     if (!paused) {
-      const t = clock.getElapsedTime();
-      arms.forEach((a, i) => {
-        if (a) a.rotation.y = t * 2 + i * 0.55;
-      });
+      mixers.forEach((mixer, i) => mixer.update((delta * 0.5) + i * 0.0001));
     }
     requestAnimationFrame(animate);
     renderer.render(scene, camera);

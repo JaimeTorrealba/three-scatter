@@ -1,38 +1,54 @@
 <script setup>
-import { Scene, Mesh, ConeGeometry, MeshStandardMaterial } from "three";
+import { Scene } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { createCamera } from "../utils/camera";
 import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";
 import { createSphere } from "../utils/demoSphere";
 import { createOrbitControls } from "../utils/orbitControls";
+import { createEnvironmentTexture } from "../utils/environmentTexture";
 import { ThreeScatter } from "three-scatter";
 import { nextTick, onMounted } from "vue";
+import { Pane } from "tweakpane";
 
 onMounted(async () => {
   await nextTick();
-  const { Pane } = await import('https://esm.sh/tweakpane@4');
 
   const renderer = createRenderer();
   const scene = new Scene();
   const camera = createCamera(scene);
   createLights(scene);
+  createEnvironmentTexture(scene, renderer);
   const sphere = createSphere(scene);
   const control = createOrbitControls(camera, renderer.domElement);
 
-  const model = new Mesh(
-    new ConeGeometry(0.2, 0.7, 7),
-    new MeshStandardMaterial({ color: 0xc47a3a })
-  );
+  let scatter;
+  new GLTFLoader().load("/models/trunk-long.glb", (_model) => {
+    const model = _model.scene;
+    scatter = new ThreeScatter(60, sphere.geometry, model, { seeds: 1 });
+    scatter.alignToSurfaceNormal();
+    scene.add(scatter);
+  });
 
-  const scatter = new ThreeScatter(60, sphere.geometry, model, { seeds: 1 });
-  scene.add(scatter);
-
-  const container = document.getElementById('webGl').parentElement;
+  const container = document.getElementById("webGl").parentElement;
   const pane = new Pane({ container });
   const params = { seed: 1 };
 
-  pane.addBinding(params, 'seed', { min: 1, max: 30, step: 1, label: 'Seed' })
-    .on('change', ({ value }) => scatter.setSeeds(value));
+  pane
+    .addBinding(params, "seed", { min: 1, max: 30, step: 1, label: "Seed" })
+    .on("change", ({ value }) => {
+      if (scatter) {
+        scatter.setSeeds(value);
+      }
+      scatter.alignToSurfaceNormal();
+    });
+  pane.addButton({ title: "Full Screen" }).on("click", () => {
+    if (!document.fullscreenElement) {
+      container.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
 
   function animate() {
     control.update();

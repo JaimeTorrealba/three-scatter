@@ -1,12 +1,15 @@
 <script setup>
-import { Scene, Mesh, ConeGeometry, OctahedronGeometry, MeshStandardMaterial } from "three";
+import { Scene } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { createCamera } from "../utils/camera";
 import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";
-import { createSphere } from "../utils/demoSphere";
+import { createPlane } from "../utils/demoPlane";
 import { createOrbitControls } from "../utils/orbitControls";
+import { createEnvironmentTexture } from "../utils/environmentTexture";
 import { ThreeScatter } from "three-scatter";
 import { nextTick, onMounted } from "vue";
+import { Pane } from "tweakpane";
 
 onMounted(async () => {
   await nextTick();
@@ -14,21 +17,32 @@ onMounted(async () => {
   const renderer = createRenderer();
   const scene = new Scene();
   const camera = createCamera(scene);
+  camera.position.set(0, 5, 10);
   createLights(scene);
-  const sphere = createSphere(scene);
+  createEnvironmentTexture(scene, renderer);
+  const plane = createPlane(scene);
   const control = createOrbitControls(camera, renderer.domElement);
 
-  const model1 = new Mesh(
-    new ConeGeometry(0.2, 0.7, 6),
-    new MeshStandardMaterial({ color: 0xc47a3a })
-  );
-  const model2 = new Mesh(
-    new OctahedronGeometry(0.28),
-    new MeshStandardMaterial({ color: 0x4a8fd4 })
-  );
+  new GLTFLoader().load("/models/trunk-long.glb", (trunk) => {
+    new GLTFLoader().load("/models/rocks.glb", (rocks) => {
+      const model1 = trunk.scene;
+      const model2 = rocks.scene;
+      const scatter = new ThreeScatter(80, plane.geometry, [model1, model2]);
+      scatter.rotation.x = -Math.PI / 2;
+      scatter.alignToSurfaceNormal()
+      scene.add(scatter);
+    });
+  });
 
-  const scatter = new ThreeScatter(80, sphere.geometry, [model1, model2]);
-  scene.add(scatter);
+  const container = document.getElementById("webGl").parentElement;
+  const pane = new Pane({ container });
+  pane.addButton({ title: "Full Screen" }).on("click", () => {
+    if (!document.fullscreenElement) {
+      container.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
 
   function animate() {
     control.update();
