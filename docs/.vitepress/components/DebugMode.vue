@@ -1,6 +1,6 @@
 <script setup>
 import { Scene, PlaneGeometry, MeshBasicMaterial, Mesh } from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { createCamera } from "../utils/camera";
 import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";

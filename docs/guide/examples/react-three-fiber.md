@@ -7,7 +7,7 @@ description: Use ThreeScatter with React Three Fiber
 
 [Open demo on StackBlitz](https://stackblitz.com/edit/vitejs-vite-xdwzuwxi?file=src%2Fmain.jsx)
 
-`ThreeScatter` works seamlessly with [React Three Fiber](https://docs.pmnd.rs/react-three-fiber). Use the take-over pattern inside a `useEffect` (or `useLayoutEffect`) to create the scatter and attach it to the scene, or pass any `THREE.Object3D` ref directly.
+`ThreeScatter` works seamlessly with [React Three Fiber](https://docs.pmnd.rs/react-three-fiber). Create the scatter inside a `useEffect` (or `useLayoutEffect`) and attach it directly to the Three.js scene.
 
 ```jsx
 import { useEffect, useRef } from 'react'
@@ -17,7 +17,7 @@ import { ThreeScatter } from 'three-scatter'
 
 export function ScatterScene() {
   const { scene } = useThree()
-  const { scene: model, nodes } = useGLTF('/model.glb')
+  const { scene: model } = useGLTF('/model.glb')
   const surfaceRef = useRef()
 
   useEffect(() => {
@@ -25,7 +25,10 @@ export function ScatterScene() {
     const scatter = new ThreeScatter(100, surfaceRef.current.geometry, model)
     scatter.alignToSurfaceNormal()
     scene.add(scatter)
-    return () => scene.remove(scatter)
+    return () => {
+      scatter.cleanGroup()
+      scene.remove(scatter)
+    }
   }, [model, scene])
 
   return <mesh ref={surfaceRef}>
@@ -36,5 +39,5 @@ export function ScatterScene() {
 ```
 
 ::: info
-Return a cleanup function from `useEffect` that removes the scatter from the scene to avoid duplicates on hot-reload or component unmount.
+Return a cleanup function from `useEffect` that calls `cleanGroup()` and removes the scatter from the scene. This avoids memory leaks and duplicate scatters on hot-reload or component unmount.
 :::

@@ -124,7 +124,7 @@ function toTrianglesDrawMode(geometry, drawMode) {
   }
 }
 
-// node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js
+// node_modules/.pnpm/three@0.176.0/node_modules/three/addons/loaders/GLTFLoader.js
 var GLTFLoader = class extends Loader {
   /**
    * Constructs a new glTF loader.

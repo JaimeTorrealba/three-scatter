@@ -1,6 +1,6 @@
 <script setup>
 import { Scene } from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { createCamera } from "../utils/camera";
 import { createRenderer } from "../utils/renderer";
 import { createLights } from "../utils/lights";
@@ -32,11 +32,19 @@ onMounted(async () => {
 
   const container = document.getElementById('webGl').parentElement;
   const pane = new Pane({ container });
-  const params = { yThreshold: -1 };
+  const params = { yThreshold: -1, xThreshold: -1, zThreshold: -1 };
 
-  pane.addBinding(params, 'yThreshold', { min: -1, max: 1, step: 0.01, label: 'Y Threshold' })
+  pane.addBinding(params, 'yThreshold', { min: -1, max: 0.5, step: 0.01, label: 'Y Threshold' })
     .on('change', ({ value }) => {
-      if (scatter) scatter.setAxis([-2, -2], [value, 1], [-2, -2]);
+      if (scatter) scatter.setAxis([-2, -2], [value, value + 0.5], [-2, -2]);
+    });
+  pane.addBinding(params, 'xThreshold', { min: -1, max: 0.5, step: 0.01, label: 'X Threshold' })
+    .on('change', ({ value }) => {
+      if (scatter) scatter.setAxis([value, value + 0.5], [-2, -2], [-2, -2]);
+    });
+  pane.addBinding(params, 'zThreshold', { min: -1, max: 0.5, step: 0.01, label: 'Z Threshold' })
+    .on('change', ({ value }) => {
+      if (scatter) scatter.setAxis([-2, -2], [-2, -2], [value, value + 0.5]);
     });
   pane.addButton({ title: 'Full Screen' }).on('click', () => {
     if (!document.fullscreenElement) {

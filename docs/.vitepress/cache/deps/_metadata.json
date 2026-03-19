@@ -64,8 +64,8 @@
       "fileHash": "c7e7d494",
       "needsInterop": false
     },
-    "three/examples/jsm/loaders/GLTFLoader": {
-      "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+    "three/addons/loaders/GLTFLoader": {
+      "src": "../../../../node_modules/.pnpm/three@0.176.0/node_modules/three/addons/loaders/GLTFLoader.js",
       "file": "three_examples_jsm_loaders_GLTFLoader.js",
       "fileHash": "14c86283",
       "needsInterop": false
