@@ -81,7 +81,11 @@ export default defineConfig({
       { icon: 'bluesky', link: 'https://bsky.app/profile/jaimebboyjt.bsky.social' },
       { icon: 'github', link: 'https://github.com/JaimeTorrealba/three-scatter' },
     ],
-      vite: {
+  },
+  vite: {
+    ssr: {
+      noExternal: ['three'],
+    },
     optimizeDeps: {
       exclude: ['vitepress'],
       include: ['three'],
@@ -97,6 +101,5 @@ export default defineConfig({
         'three-scatter': resolve(__dirname, '../../src/index.ts'),
       },
     },
-  },
   },
 })
