@@ -4,6 +4,14 @@
   "license": "MIT",
   "private": false,
   "description": "A Three.js library for scattering 3D models",
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/JaimeTorrealba/three-scatter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JaimeTorrealba/three-scatter/issues"
+  },
+  "homepage": "https://three-scatter-docs.netlify.app/",
   "publishConfig": {
     "access": "public"
   },
