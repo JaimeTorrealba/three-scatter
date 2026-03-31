@@ -13,7 +13,6 @@ export default defineConfig({
     ['script', { 'defer': 'true', 'data-site': 'OWBUVCJK', 'src': 'https://cdn.usefathom.com/script.js' }],
   ],
    themeConfig: {
-    logo: '/logo.svg',
     search: {
       provider: 'local',
     },

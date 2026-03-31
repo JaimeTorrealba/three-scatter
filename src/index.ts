@@ -2,33 +2,8 @@ import { BufferGeometry, Mesh, Group, Triangle, Material, Object3D, Box3, Vector
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import alea from 'alea';
 
-// Extend Mesh to include _triangle property
-class MeshWithTriangle extends Mesh {
-    _triangle?: Triangle;
-}
-/*
-Base: geometry to scatter on
-Mesh: mesh or meshes to scatter
-Count: number of meshes to scatter
-Options:
-    debug: enable debug mode; hides scattered meshes and shows instanced debug markers
-    debugGeometry: geometry used for debug markers when debug is enabled
-    debugMaterial: material used for debug markers when debug is enabled
-    seeds: PRNG seed for deterministic sampling across faces
-    randomFn: function returning a number in [0,1) to drive randomness
-    useSkeletonUtils: clone meshes via SkeletonUtils to preserve skeletons/skins
-    distribution: probabilities per mesh for multi-mesh sampling; must sum to 1
-*/
-
-interface Options {
-    debug?: boolean;
-    debugGeometry?: BufferGeometry;
-    debugMaterial?: Material;
-    seeds?: number;
-    randomFn?: () => number;
-    useSkeletonUtils?: boolean; // if true, use SkeletonUtils to clone the mesh
-    distribution?: number[];
-}
+import { blueNoise2D, extractFaces, generateRandomPointInTriangle } from './utils';
+import type { Options, MeshWithTriangle } from './types';
 
 class ThreeScatter extends Group {
     count: number;
@@ -51,7 +26,7 @@ class ThreeScatter extends Group {
     positions: Vector3[];
     noise: number;
 
-    constructor(count: number, base: BufferGeometry, mesh: Mesh, options: Options = {}) {   
+    constructor(count: number, base: BufferGeometry, mesh: Mesh, options: Options = {}) {
         super();
         this.base = base;
         this.mesh = mesh;
@@ -73,7 +48,7 @@ class ThreeScatter extends Group {
         //internals
         this.precision = 2;
         this.prng = alea(this.seeds);
-        this.noise = this.#blueNoise2D(this.precision, -this.precision, this.prng());
+        this.noise = blueNoise2D(this.precision, -this.precision, this.prng());
         this.faces = [];
         this.positions = [];
         this.sample()
@@ -82,65 +57,15 @@ class ThreeScatter extends Group {
             this.setDebug()
         }
     }
-    #generateRandomPointInTriangle() {
-        const randomTriangle = this.faces[Math.floor(this.randomFn() * this.faces.length)];
-        let r1 = this.#blueNoise2D(this.precision, -this.precision, this.prng());
-        let r2 = this.#blueNoise2D(this.precision, -this.precision, this.prng());
-
-        if (r1 + r2 > 1) {
-            r1 = 1 - r1;
-            r2 = 1 - r2;
-        }
-
-        const v1 = randomTriangle.a;
-        const v2 = randomTriangle.b;
-        const v3 = randomTriangle.c;
-
-        const randomPoint = {
-            x: (1 - r1 - r2) * v1.x + r1 * v2.x + r2 * v3.x,
-            y: (1 - r1 - r2) * v1.y + r1 * v2.y + r2 * v3.y,
-            z: (1 - r1 - r2) * v1.z + r1 * v2.z + r2 * v3.z,
-            triangle: randomTriangle
-        };
-        this.positions.push(new Vector3(randomPoint.x, randomPoint.y, randomPoint.z));
-        return randomPoint;
-    }
-    #extractFaces() {
-        const _face = new Triangle();
-        const positionAttribute = this.base.getAttribute('position');
-        const indexAttribute = this.base.index;
-        const totalFaces = indexAttribute ? (indexAttribute.count / 3) : (positionAttribute.count / 3);
-        for (let i = 0; i < totalFaces; i++) {
-
-            let i0 = 3 * i;
-            let i1 = 3 * i + 1;
-            let i2 = 3 * i + 2;
-
-            if (indexAttribute) {
-
-                i0 = indexAttribute.getX(i0);
-                i1 = indexAttribute.getX(i1);
-                i2 = indexAttribute.getX(i2);
-
-            }
-
-            _face.a.fromBufferAttribute(positionAttribute, i0);
-            _face.b.fromBufferAttribute(positionAttribute, i1);
-            _face.c.fromBufferAttribute(positionAttribute, i2);
-
-            this.faces.push(_face.clone());
-
-        }
-    }
     sample() {
         let sampleMesh;
         // Extract faces from base model
-        this.#extractFaces();
+        this.faces = extractFaces(this.base);
 
         // If no mesh provided
         if (!this.mesh) {
             for (let i = 0; i < this.count; i++) {
-                this.#generateRandomPointInTriangle();
+                generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
             }
             return
         }
@@ -148,7 +73,7 @@ class ThreeScatter extends Group {
         // If only one model
         if (!Array.isArray(this.mesh)) {
             for (let i = 0; i < this.count; i++) {
-                const randomPoint = this.#generateRandomPointInTriangle();
+                const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
@@ -163,7 +88,7 @@ class ThreeScatter extends Group {
                 let meshIndex = 0;
                 meshIndex = i % this.mesh.length;
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
-                const randomPoint = this.#generateRandomPointInTriangle();
+                const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
                 (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
@@ -182,7 +107,7 @@ class ThreeScatter extends Group {
         }
 
         for (let i = 0; i < this.count; i++) {
-            const randomPoint = this.#generateRandomPointInTriangle();
+            const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
             let meshIndex = 0;
 
             // Calculate cumulative distribution
@@ -239,17 +164,13 @@ class ThreeScatter extends Group {
             this.instancedMesh.visible = false;
         }
     }
-    #blueNoise2D(x: number, y: number, seed = 0) {
-        let n = x * 374761393 + y * 668265263 + seed * 69069;
-        n = (n ^ (n >> 13)) * 1274126177;
-        return ((n ^ (n >> 16)) >>> 0) / 4294967296;
-    }
+
     setSeeds(seed = 1) {
         this.prng = alea(seed);
-        this.noise = this.#blueNoise2D(0, 1, this.prng());
+        this.noise = blueNoise2D(0, 1, this.prng());
         this.children.forEach((child) => {
             if (child instanceof InstancedMesh) return
-            const randomPoint = this.#generateRandomPointInTriangle();
+            const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
             (child as Mesh).position.set(randomPoint.x, randomPoint.y, randomPoint.z);
             (child as MeshWithTriangle)._triangle = randomPoint.triangle;
         })

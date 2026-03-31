@@ -1,3 +1,6 @@
+![npm](https://img.shields.io/npm/v/@jaimebboyjt/three-scatter)
+<!-- ![downloads](https://img.shields.io/npm/dw/@jaimebboyjt/three-scatter) -->
+
 # Three scatter
 
 > Inspired by a GScatter (plugin for blender) in Three.js
