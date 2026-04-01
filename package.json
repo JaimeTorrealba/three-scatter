@@ -1,10 +1,10 @@
 {
   "name": "@jaimebboyjt/three-scatter",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "private": false,
   "description": "A Three.js library for scattering 3D models",
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/JaimeTorrealba/three-scatter.git"
   },
