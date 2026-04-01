@@ -65,7 +65,6 @@ new ThreeScatter(count: number, base: BufferGeometry, mesh?: Mesh | Mesh[], opti
 ```ts
 interface Options {
   seeds?: number          // default: 1
-  randomFn?: () => number // default: Math.random
   useSkeletonUtils?: boolean  // default: false
   distribution?: number[]     // default: undefined
   debug?: boolean             // default: false
@@ -77,7 +76,6 @@ interface Options {
 | Property | Type | Default | Description |
 |---|---|---|---|
 | `seeds` | `number` | `1` | PRNG seed for reproducible layouts. |
-| `randomFn` | `() => number` | `Math.random` | Custom random function returning a value in `[0, 1)`. |
 | `useSkeletonUtils` | `boolean` | `false` | Use `SkeletonUtils.clone` — required for rigged/animated models. |
 | `distribution` | `number[]` | `undefined` | Per-model probability weights. Must match mesh array length and sum to `1`. |
 | `debug` | `boolean` | `false` | Enable debug proxy mode at construction. |

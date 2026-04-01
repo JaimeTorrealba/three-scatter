@@ -37,8 +37,8 @@ export const extractFaces = (base: BufferGeometry) => {
     return _faces;
 }
 
-export const generateRandomPointInTriangle = (faces: Triangle[], randomFn: () => number, prng: () => number, precision: number, positions: Vector3[]) => {
-    const randomTriangle = faces[Math.floor(randomFn() * faces.length)];
+export const generateRandomPointInTriangle = (faces: Triangle[], prng: () => number, precision: number, positions: Vector3[]) => {
+    const randomTriangle = faces[Math.floor(prng() * faces.length)];
     let r1 = blueNoise2D(precision, -precision, prng());
     let r2 = blueNoise2D(precision, -precision, prng());
 

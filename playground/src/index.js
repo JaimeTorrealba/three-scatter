@@ -48,12 +48,20 @@ window.addEventListener("resize", () => {
 const pane = new Pane();
 
 const options = {
+  count: 100,
   seed: 1,
   rotationY: 0,
   scale: 1,
   firstRockScale: 1,
 };
 
+pane.addInput(options, "count", {
+  min: 50,
+  max: 500,
+  step: 25
+}).on('change', () => {
+  scatter.setCount(options.count);
+});
 pane.addInput(options, "seed", {
   min: -15,
   max: 15,
@@ -115,7 +123,7 @@ toScatterLoader.load(url, (_model) => {
     _floor.scene.scale.set(0.5, 0.5, 0.5);
 
     const model = _model.scene;
-    scatter = new ThreeScatter(100, floor, model, {
+    scatter = new ThreeScatter(options.count, floor, model, {
       // seeds: 1,
       // precision: 0.1,
       //debug: true

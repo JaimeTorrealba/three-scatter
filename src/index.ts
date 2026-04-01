@@ -11,7 +11,6 @@ class ThreeScatter extends Group {
     mesh?: Mesh | Mesh[];
     // options
     seeds: number;
-    randomFn: () => number;
     useSkeletonUtils: boolean;
     // debug
     debug: boolean;
@@ -35,7 +34,6 @@ class ThreeScatter extends Group {
         // options
 
         this.seeds = options.seeds ?? 1;
-        this.randomFn = options.randomFn || Math.random;
         this.useSkeletonUtils = options.useSkeletonUtils ?? false;
 
         // debug
@@ -65,7 +63,7 @@ class ThreeScatter extends Group {
         // If no mesh provided
         if (!this.mesh) {
             for (let i = 0; i < this.count; i++) {
-                generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
+                generateRandomPointInTriangle(this.faces, this.prng, this.precision, this.positions);
             }
             return
         }
@@ -73,7 +71,7 @@ class ThreeScatter extends Group {
         // If only one model
         if (!Array.isArray(this.mesh)) {
             for (let i = 0; i < this.count; i++) {
-                const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
+                const randomPoint = generateRandomPointInTriangle(this.faces, this.prng, this.precision, this.positions);
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh) : this.mesh.clone();
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
@@ -88,7 +86,7 @@ class ThreeScatter extends Group {
                 let meshIndex = 0;
                 meshIndex = i % this.mesh.length;
                 sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
-                const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
+                const randomPoint = generateRandomPointInTriangle(this.faces, this.prng, this.precision, this.positions);
                 sampleMesh.position.set(randomPoint.x, randomPoint.y, randomPoint.z);
                 sampleMesh.name = `scatter_${i}`;
                 (sampleMesh as MeshWithTriangle)._triangle = randomPoint.triangle;
@@ -107,7 +105,7 @@ class ThreeScatter extends Group {
         }
 
         for (let i = 0; i < this.count; i++) {
-            const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
+            const randomPoint = generateRandomPointInTriangle(this.faces, this.prng, this.precision, this.positions);
             let meshIndex = 0;
 
             // Calculate cumulative distribution
@@ -117,7 +115,7 @@ class ThreeScatter extends Group {
                 sum += d;
                 cumulative.push(sum);
             }
-            const r = this.randomFn();
+            const r = this.prng();
             meshIndex = cumulative.findIndex(c => r < c);
             if (meshIndex === -1) meshIndex = this.mesh.length - 1;
             sampleMesh = this.useSkeletonUtils ? SkeletonUtils.clone(this.mesh[meshIndex]) : this.mesh[meshIndex].clone();
@@ -165,12 +163,23 @@ class ThreeScatter extends Group {
         }
     }
 
+    setCount(count: number) {
+        this.count = count;
+        this.cleanGroup();
+        this.positions = [];
+        this.instancedMesh = undefined;
+        this.prng = alea(this.seeds);
+        this.sample();
+        if (this.debug) {
+            this.setDebug();
+        }
+    }
     setSeeds(seed = 1) {
         this.prng = alea(seed);
         this.noise = blueNoise2D(0, 1, this.prng());
         this.children.forEach((child) => {
             if (child instanceof InstancedMesh) return
-            const randomPoint = generateRandomPointInTriangle(this.faces, this.randomFn, this.prng, this.precision, this.positions);
+            const randomPoint = generateRandomPointInTriangle(this.faces, this.prng, this.precision, this.positions);
             (child as Mesh).position.set(randomPoint.x, randomPoint.y, randomPoint.z);
             (child as MeshWithTriangle)._triangle = randomPoint.triangle;
         })
